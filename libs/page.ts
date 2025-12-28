@@ -1,8 +1,10 @@
-import { chromium } from "playwright";
+import { chromium, type Page } from "playwright";
 import { CONFIG } from "../config/config";
 
-class Page {
-    static async create(): Promise<Page> {
+class MyPage {
+    static async create(
+        baseURL: string = "https://google.com/",
+    ): Promise<Page> {
         const browser = await chromium.launch({
             headless: CONFIG.browser.isHeadless,
         });
@@ -10,8 +12,9 @@ class Page {
             locale: CONFIG.browser.locale,
         });
         const page = await context.newPage();
+        await page.goto(baseURL, { waitUntil: "networkidle" });
         return page;
     }
 }
 
-export default Page;
+export default MyPage;
